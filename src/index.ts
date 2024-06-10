@@ -9,6 +9,8 @@
 import { Context, Telegraf } from "telegraf";
 import { Update } from "telegraf/typings/core/types/typegram";
 import { message } from "telegraf/filters";
+import config from "./config";
+const configMode: string = config.mode;
 require("dotenv").config({ path: __dirname + "/../private/.env" });
 
 const isTokenValid = (token: string): boolean => {
@@ -20,10 +22,13 @@ const isGroupId = (id: number): boolean => {
 };
 
 const isRefLinkToBlock = (text: string): boolean => {
-  return (
-    /t\.me\/hamster_kombat_bot.{0,}/.test(text) ||
-    /t\.me\/blumcryptobot.{0,}/.test(text)
-  );
+  if (configMode !== "rude")
+    return (
+      /t\.me\/hamster_kombat_bot.*/.test(text) ||
+      /t\.me\/blumcryptobot.*/.test(text)
+    );
+
+  return /t\.me\/[a-z][a-z0-9_]+bot.*/.test(text);
 };
 
 const isBotAdmin = async (ctx: any): Promise<boolean> => {
