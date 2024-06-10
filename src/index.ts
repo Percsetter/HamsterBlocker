@@ -10,43 +10,21 @@ import { Context, Telegraf } from "telegraf";
 import { Update } from "telegraf/typings/core/types/typegram";
 import { message } from "telegraf/filters";
 import config from "./config";
-const configMode: string = config.mode;
+import {
+  isTokenValid,
+  isBotAdmin,
+  isGroupId,
+  isRefLinkToBlock,
+  createTgBotLink,
+} from "./functions";
+
 require("dotenv").config({ path: __dirname + "/../private/.env" });
 
-const isTokenValid = (token: string): boolean => {
-  return /^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/.test(token);
-};
-
-const isGroupId = (id: number): boolean => {
-  return /^-[0-9]+$/.test(id.toString());
-};
-
-const isRefLinkToBlock = (text: string): boolean => {
-  if (configMode !== "rude")
-    return (
-      /t\.me\/hamster_kombat_bot.*/.test(text) ||
-      /t\.me\/blumcryptobot.*/.test(text)
-    );
-
-  return /t\.me\/[a-z][a-z0-9_]+bot\/start\?[a-z0-9_]+=[a-z0-9_]+/.test(text);
-};
-
-const isBotAdmin = async (ctx: any): Promise<boolean> => {
-  const botMember = await ctx.getChatMember(ctx.botInfo.id);
-  return botMember.status === "administrator";
-};
-const createTgBotLink = (botUserName: string, extra: string = ""): string => {
-  return `https://t.me/${botUserName}${extra}`;
-};
 process.env.TOKEN
   ? isTokenValid(process.env.TOKEN)
     ? null
     : console.error("Invalid token")
   : console.error("You haven't created a token .env file.");
-
-type Answers = {
-  start: string;
-};
 
 const token: string = process.env.TOKEN ?? "Invalid";
 const bot: Telegraf<Context<Update>> = new Telegraf(token);
@@ -83,7 +61,7 @@ bot.on(message("text"), async (ctx) => {
     const messageText: string = ctx.text.toLowerCase();
 
     if (
-      isRefLinkToBlock(messageText) &&
+      isRefLinkToBlock(messageText, config.mode) &&
       (await isBotAdmin(ctx)) &&
       (await ctx.getChatMember(ctx.message.from.id)).status === "member"
     ) {
