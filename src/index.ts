@@ -28,7 +28,7 @@ const isRefLinkToBlock = (text: string): boolean => {
       /t\.me\/blumcryptobot.*/.test(text)
     );
 
-  return /t\.me\/[a-z][a-z0-9_]+bot.*/.test(text);
+  return /t\.me\/[a-z][a-z0-9_]+bot\?[a-z0-9_]+=[a-z0-9_]+/.test(text);
 };
 
 const isBotAdmin = async (ctx: any): Promise<boolean> => {
