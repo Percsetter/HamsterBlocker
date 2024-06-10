@@ -21,8 +21,8 @@ const isGroupId = (id: number): boolean => {
 
 const isRefLinkToBlock = (text: string): boolean => {
   return (
-    /https?:\/\/t.me\/hamster_kombat_bot.{0,}/.test(text) ||
-    /https?:\/\/t.me\/blumcryptobot.{0,}/.test(text)
+    /t\.me\/hamster_kombat_bot.{0,}/.test(text) ||
+    /t\.me\/blumcryptobot.{0,}/.test(text)
   );
 };
 
